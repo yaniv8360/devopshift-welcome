@@ -1,0 +1,3 @@
+GITBRANCH=workshop/terraform
+GITURL=github.com/yaniv8360/devopshift-welcome
+GITUSERNAME=yaniv8360
