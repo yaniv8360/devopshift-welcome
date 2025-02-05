@@ -1,18 +1,24 @@
-variable "emptyip" {
-    default = "192.168.1.1"
+provider "aws" {
+  region = var.region
 }
 
-resource "null_resource" "check_public_ip" {
-  provisioner "local-exec" {
-    command = <<EOT
-      if [ -z "${var.emptyip}" ]; then
-        echo "ERROR: Public IP address was not assigned." >&2
-        exit 1
-        else
-        echo "We got the IP! ${var.emptyip}"
-      fi
-    EOT
+variable "region" {
+  default = "us-east-1"
+}
+data "aws_instances" "yaniv_vm" {
+  filter {
+    name   = "tag:Name"
+    values = ["yaniv-vm"]
   }
+}
 
-#   depends_on = [aws_instance.vm]
+# Assuming only one instance matches, output its public IP:
+output "yaniv_vm_public_ip" {
+  value       = data.aws_instances.yaniv_vm.ids[0] != "" ? data.aws_instance.example.public_ip : "No instance found"
+  description = "The public IP address of the yaniv-vm instance."
+}
+
+# To complete this approach, you would also add a separate data block to query that single instance by its ID:
+data "aws_instance" "example" {
+  instance_id = data.aws_instances.yaniv_vm.ids[0]
 }
