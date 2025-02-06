@@ -1,9 +1,8 @@
 module "ec2_vm" {
   source         = "./modules/ec2"
-  ami            = "ami-0ecc0e0d5986a576d"   # Example AMI ID provided by your instructor
+  ami            = "ami-0ecc0e0d5986a576d"
   instance_type  = "t2.micro"
   vm_name        = "yaniv-vm"
-  # The region variable is optional since it has a default value
 }
 
 output "machine_public_ip" {
