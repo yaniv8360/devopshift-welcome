@@ -4,13 +4,13 @@ variable "region" {
 }
 
 variable "ami" {
-  description = "AMI to use for the instance"
+
 }
 
 variable "instance_type" {
-  description = "EC2 instance type"
+
 }
 
 variable "vm_name" {
-  description = "Name tag for the VM"
+
 }
