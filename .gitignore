@@ -47,3 +47,6 @@ code/aws/solutions/lab103/.terraform.lock.hcl
 **target_health.txt
 **/.terraform.lock.hcl
 labs/lab101/examTerraform/id_YanivRoticsRsa
+labs/lab101/examTerraform/moduleExam/modules/id_YanivRoticsRsa
+labs/lab101/examTerraform/moduleExam/modules/id_YanivRoticsRsa2
+labs/lab101/examTerraform/moduleExam/modules/id_YanivRoticsRsa3
