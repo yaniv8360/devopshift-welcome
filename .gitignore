@@ -43,3 +43,5 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rckeys/
+get-pip.py.1
+get-pip.py
