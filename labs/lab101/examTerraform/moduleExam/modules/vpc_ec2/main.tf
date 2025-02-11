@@ -1,30 +1,25 @@
-# Create VPC only if enabled
 resource "aws_vpc" "custom_vpc" {
-
  cidr_block           = var.vpc_cidr
  enable_dns_support   = true
  enable_dns_hostnames = true
-
  tags = {
    Name = "YanivRotics-vpc"
  }
 }
 
-# Create subnet inside the VPC
 resource "aws_subnet" "public_subnet" {
  count = var.subnet_count
  vpc_id            = aws_vpc.custom_vpc.id
  cidr_block        = var.subnet_cidrs[count.index]
  map_public_ip_on_launch = true
-
  tags = {
    Name = "YanivRoticsPublic-subnet-${count.index + 1}"
  }
 }
+
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.custom_vpc.id
   cidr_block = "10.0.2.0/24"
-
   tags = {
     Name = "YanivRoticsPrivate-subnet"
   }
@@ -32,20 +27,17 @@ resource "aws_subnet" "private_subnet" {
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.custom_vpc.id
-
   tags = {
     Name = "YanivRotics-igw"
   }
 }
+
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.custom_vpc.id
-
-  # Route to direct all traffic to the Internet Gateway
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-
   tags = {
     Name = "YanivRotics-rt"
   }
@@ -55,18 +47,16 @@ resource "aws_route_table_association" "public_rt_assoc" {
   subnet_id      = aws_subnet.public_subnet[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
+
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.custom_vpc.id
-
-  tags = {
-    Name = "private-route-table"
-  }
 }
 
 resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private.id
 }
+
 resource "aws_security_group" "instance_sg" {
   name        = "instance-sg"
   description = "Allow SSH and HTTP traffic"
@@ -94,14 +84,9 @@ resource "aws_security_group" "instance_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = {
-    Name = "instance-sg"
-  }
 }
 
 variable "key_pairs" {
-  description = "key_pairs"
   type = list(object({
     key_name   = string
     public_key = string
@@ -119,9 +104,9 @@ variable "key_pairs" {
       key_name   = "YanivRoticsKeyPair3"
       public_key = "./modules/id_YanivRoticsRsa3.pub"
     }
-    # Add more if necessary
   ]
 }
+
 resource "aws_key_pair" "my_key_pair" {
   count = var.subnet_count
   key_name   = var.key_pairs[count.index].key_name
@@ -140,8 +125,7 @@ resource "aws_instance" "ubuntu_instance" {
     Name = "YanivRoticsUbuntuMachine-${count.index + 1}"
   }
 }
+
 output "vm_public_ip" {
-  
   value       = aws_instance.ubuntu_instance[*].public_ip
-  description = "Public IP address of the VM"
 }
