@@ -20,8 +20,6 @@ if code == 200:
     print(email)
     print(f"{street}, {city}")
 if code == 400:
-    server_data = response.json()
     print("User not found.")
 if code == 500:
-    server_data = response.json()
     print("Server error. Please try again later.")
