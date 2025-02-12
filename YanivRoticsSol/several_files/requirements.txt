@@ -1,0 +1,4 @@
+httpx==0.28.1
+fastapi==0.115.8
+fastapi-cli==0.07
+pydantic==2.10.6
