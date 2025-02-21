@@ -9,7 +9,7 @@ dict_to_jsonFile = {
 }
 
 def fetch_ec2_details():
-    instance_id = "i-0d3275960b1528267"
+    instance_id = "i-05b9acb553c4283e3"
     ec2_client = boto3.client('ec2', region_name="us-east-1")
     try:
         response = ec2_client.describe_instances(InstanceIds=[instance_id])
@@ -41,7 +41,7 @@ def fetch_ALB_detials():
     except botocore.exceptions.ClientError as e:
         print(f"Error: {e.response['Error']['Message']}")
         exit()
-        
+
 def print_to_json_file():
     with open("aws_validation.json", "w") as f:
         json.dump(dict_to_jsonFile, f)

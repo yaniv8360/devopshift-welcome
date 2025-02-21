@@ -60,7 +60,6 @@ target_id        = aws_instance.web_server.id
 resource "aws_subnet" "public" {
 count = 2
 vpc_id = data.aws_vpc.default.id
-# cidr_block = "10.0.${count.index}.0/24"
 cidr_block = cidrsubnet(data.aws_vpc.default.cidr_block, 8, count.index)
 availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 }
@@ -69,21 +68,13 @@ data "aws_vpc" "default" {
     default = true
 }
 output "instance_id" {
-  description = "ID of the EC2 instance"
-  value       = aws_instance.web_server.id
+  value= aws_instance.web_server.id
 }
 
 output "alb_dns_name" {
-  description = "DNS name of the Application Load Balancer"
-  value       = aws_lb.application_lb.dns_name
+  value= aws_lb.application_lb.dns_name
 }
 
 output "instance_public_ip" {
-  description = "Public IP of the EC2 instance"
-  value       = aws_instance.web_server.public_ip
+  value= aws_instance.web_server.public_ip
 }
-
-output "target_group_arn" {
-  description = "ARN of the Target Group"
-  value       = aws_lb_target_group.web_target_group.arn
-}    

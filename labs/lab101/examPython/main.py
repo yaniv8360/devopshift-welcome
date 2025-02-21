@@ -51,9 +51,10 @@ resource "aws_instance" "web_server" {
 ami = "{{ ami }}"
 instance_type = "{{ instance_type }}"
 availability_zone = "{{ availability_zone }}"
+subnet_id= aws_subnet.public[0].id
 
 tags = {
-Name = "WebServer"
+Name = "YanivRoticsAmi21"
 }
 }
 
@@ -66,7 +67,7 @@ subnets = aws_subnet.public[*].id
 }
 
 resource "aws_security_group" "lb_sg" {
-name        = "lb_security_group"
+name        = "YanivRotics-lbsg21"
 description = "Allow HTTP inbound traffic"
 
 ingress {
@@ -89,10 +90,10 @@ target_group_arn = aws_lb_target_group.web_target_group.arn
 }
 
 resource "aws_lb_target_group" "web_target_group" {
-name     = "web-target-group"
+name     = "YanivRotics21-target-group"
 port     = 80
 protocol = "HTTP"
-vpc_id   = aws_vpc.main.id
+vpc_id   = data.aws_vpc.default.id
 }
 
 resource "aws_lb_target_group_attachment" "web_instance_attachment" {
@@ -102,13 +103,24 @@ target_id        = aws_instance.web_server.id
 
 resource "aws_subnet" "public" {
 count = 2
-vpc_id = aws_vpc.main.id
-cidr_block = "10.0.${count.index}.0/24"
+vpc_id = data.aws_vpc.default.id
+cidr_block = cidrsubnet(data.aws_vpc.default.cidr_block, 8, count.index)
 availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 }
 
-resource "aws_vpc" "main" {
-cidr_block = "10.0.0.0/16"
+data "aws_vpc" "default" {
+    default = true
+}
+output "instance_id" {
+  value= aws_instance.web_server.id
+}
+
+output "alb_dns_name" {
+  value= aws_lb.application_lb.dns_name
+}
+
+output "instance_public_ip" {
+  value= aws_instance.web_server.public_ip
 }
 """
 context = {
