@@ -1,49 +1,48 @@
 #!/usr/bin/python3
 import jinja2
-def main():
-    UBUNTU = "ami-0dee1ac7107ae9f8c"
-    AMAZON_LINUX = "ami-0f1a6835595fb9246"
-    ami = None
-    instance_type = None
-    region = "us-east-1"
-    availability_zone = "us-east-1a"
-    load_balancer_name  = None
-    print("please select machine")
-    print("type 1 for ubuntu")
-    print("type 2 for Amazon Linux")
-    while True:
-        user_input = input()
-        if user_input == "1":
-            ami = UBUNTU
-            break
-        elif user_input == "2":
-            ami = AMAZON_LINUX
-            break
-        else:
-            print("input is not valid you have to select 1 or 2")
-    print("please select machine")
-    print("type 1 for t3.small")
-    print("type 2 for t3.medium")
-    while True:
-        user_input = input()
-        if user_input == "1":
-            instance_type = "t3.small"
-            break
-        elif user_input == "2":
-            instance_type = "t3.medium"
-            break
-        else:
-            print("input is not valid you have to select 1 or 2")
-    print("please type Availability Zone & Region:")
+UBUNTU = "ami-0c2b8ca1dad447f8a"
+AMAZON_LINUX = "ami-0f1a6835595fb9246"
+ami = None
+instance_type = None
+region = "us-east-1"
+availability_zone = "us-east-1a"
+load_balancer_name  = None
+print("please select machine")
+print("type 1 for ubuntu")
+print("type 2 for Amazon Linux")
+while True:
     user_input = input()
-    if user_input == "us-east-1":
-        region = "us-east-1"
+    if user_input == "1":
+        ami = UBUNTU
+        break
+    elif user_input == "2":
+        ami = AMAZON_LINUX
+        break
     else:
-        print("your availability zone is not ok, i choose the deafult us-east-1")
-        region = "us-east-1"
-    print("please type Load Balancer Name:")
-    load_balancer_name = input()
-    terraform_template = """
+        print("input is not valid you have to select 1 or 2")
+print("please select machine")
+print("type 1 for t3.small")
+print("type 2 for t3.medium")
+while True:
+    user_input = input()
+    if user_input == "1":
+        instance_type = "t3.small"
+        break
+    elif user_input == "2":
+        instance_type = "t3.medium"
+        break
+    else:
+        print("input is not valid you have to select 1 or 2")
+print("please type Availability Zone & Region:")
+user_input = input()
+if user_input == "us-east-1":
+    region = "us-east-1"
+else:
+    print("your availability zone is not ok, i chose the deafult us-east-1")
+    region = "us-east-1"
+print("please type Load Balancer Name:")
+load_balancer_name = input()
+terraform_template = """
 provider "aws" {
 region = "{{ region }}"
 }
@@ -111,22 +110,17 @@ availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 resource "aws_vpc" "main" {
 cidr_block = "10.0.0.0/16"
 }
-    """
-    context = {
-    "region": "us-east-1",
-    "ami": ami,
-    "instance_type": instance_type,
-    "availability_zone": "us-east-1a",
-    "load_balancer_name": load_balancer_name
-    }
-    template = jinja2.Template(terraform_template)
-    Terraform_content = template.render(context)
-    # Save the rendered pipeline to a Jenkinsfile
-    with open("main.tf", "w") as file:
-        file.write(Terraform_content)
-    
-if __name__ == "__main__":
-    main()
-
+"""
+context = {
+"region": "us-east-1",
+"ami": ami,
+"instance_type": instance_type,
+"availability_zone": "us-east-1a",
+"load_balancer_name": load_balancer_name
+}
+template = jinja2.Template(terraform_template)
+Terraform_content = template.render(context)
+with open("main.tf", "w") as file:
+    file.write(Terraform_content)
 
 
